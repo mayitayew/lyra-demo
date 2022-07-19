@@ -10,10 +10,11 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="description" content="WebRTC code samples">
+    <link rel="icon" href="./wave.png"/>
+    <meta name="description" content="Lyra on webassembly">
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
-    <meta itemprop="description" content="Client-side WebRTC code samples">
-    <meta itemprop="name" content="WebRTC code samples">
+    <meta itemprop="description" content="Lyra in-browser on webassembly">
+    <meta itemprop="name" content="Lyra on webassembly">
     <meta name="mobile-web-app-capable" content="yes">
     <meta id="theme-color" name="theme-color" content="#ffffff">
 
@@ -47,7 +48,7 @@
         <button type="button" id="enableLyraButton">Enable Lyra</button>
         <div>
 
-            <p>Warning: if you're not using headphones, pressing Start will cause feedback.
+            <p>Warning: if you're not using headphones, pressing Start may cause feedback.
             </p>
 
             <p>
@@ -56,17 +57,17 @@
                 it works on Chrome Android, Opera Android and does not work on iOS.
                 See <a
                     href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackProcessor#browser_compatibility"
-                    title="Lyra github">browser compatibility</a>.
+                    title="browser compatibility">browser compatibility</a>.
             </p>
             <a href="https://github.com/simplertc-io/lyra_demo"
                title="Source for this page" id="viewSource">View source on GitHub.</a>
             <p>
-                From what I saw, the quality of speech Lyra generates here after encoding to 3 kbps is poor.
+                Overall, the quality of speech Lyra generates here after encoding to 3 kbps is not great.
                 The sample speech clips on Google's <a
                     href="https://ai.googleblog.com/2021/02/lyra-new-very-low-bitrate-codec-for.html"
-                    title="Lyra codec">blogpost</a> about Lyra are definitely better and apparently an <a
+                    title="Lyra codec">blogpost</a> are definitely better. Even better quality audio is produced by <a
                     href="https://ai.googleblog.com/2021/08/soundstream-end-to-end-neural-audio.html"
-                    title="Soundstream codec">improvement on Lyra</a> is coming soon.
+                    title="Soundstream codec">Soundstream</a>, another neural audio codec.
             </p>
 
         </div>
