@@ -61,6 +61,27 @@
 
         <script src="https://webrtc.github.io/adapter/adapter-latest.js" crossorigin></script>
         <script type="module" src="./index.js" async></script>
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-analytics.js";
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            const firebaseConfig = {
+                apiKey: "AIzaSyAocFzp-5GTs0Wq1FTnRc3a7s0mbHlP4SM",
+                authDomain: "lyra-69165.firebaseapp.com",
+                projectId: "lyra-69165",
+                storageBucket: "lyra-69165.appspot.com",
+                messagingSenderId: "832972574701",
+                appId: "1:832972574701:web:95a45730d0c5ca7b60e1e4",
+                measurementId: "G-QBHNJRYFLQ"
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+        </script>
+
 
 
 </body>
