@@ -93,7 +93,7 @@ const constraints = window.constraints = {
 
 // Lyra encodes/decodes in frames of 40ms. Audio is being acquired in 10ms chunks. Thus we need to
 // accumulate four audio chunks to have a buffer of 40ms that can be processed by Lyra.
-const kNumRequiredFrames = 20;
+const kNumRequiredFrames = 4;
 const kNumSamplesPerFrame = 480;
 const kNumRequiredSamples = kNumSamplesPerFrame * kNumRequiredFrames;
 let buffer = new Float32Array(kNumRequiredSamples);
