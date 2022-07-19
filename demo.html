@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2021 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="description" content="WebRTC code samples">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <meta itemprop="description" content="Client-side WebRTC code samples">
+    <meta itemprop="name" content="WebRTC code samples">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+
+    <base target="_blank">
+
+    <title>Lyra on webassembly</title>
+
+    <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="demo.css">
+
+</head>
+
+<body>
+
+<div id="container">
+
+    <h1>
+        <span>Audio encoding with <a href="https://ai.googleblog.com/2021/02/lyra-new-very-low-bitrate-codec-for.html"
+                                   title="Lyra codec">Lyra</a>on webassembly</span>
+    </h1>
+
+    <p>This example demonstrates Lyra, an <a href="https://github.com/google/lyra" title="Lyra github">open-source</a>
+        neural speech codec from Google, running in the browser. It encodes audio from the microphone to <b>3 Kbps</b>, and
+        decodes and plays it back.
+    </p>
+    <audio id="audioOutput" controls></audio>
+    <br></br>
+    <div>
+        <button type="button" id="startButton">Start</button>
+        <button type="button" id="stopButton" disabled>Stop</button>
+        <button type="button" id="enableLyraButton">Enable Lyra</button>
+        <div>
+
+            <p>Warning: if you're not using headphones, pressing Start will cause feedback.
+            </p>
+
+            <p>
+                <b>Note</b>: This sample is using the experimental MediaStreamTrack API that has not yet been
+                standardized. See <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackProcessor#browser_compatibility"
+                    title="Lyra github">browser compatibility</a>.
+            </p>
+            <a href="https://github.com/webrtc/samples/tree/gh-pages/src/content/insertable-streams/audio-processing"
+               title="View source for this page on GitHub" id="viewSource">View source on GitHub</a>
+
+        </div>
+
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js" crossorigin></script>
+        <script type="module" src="demo.js" async></script>
+
+
+</body>
+</html>
