@@ -10,16 +10,17 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="description" content="WebRTC code samples">
+    <link rel="icon" href="./wave.png"/>
+    <meta name="description" content="Lyra on webassembly">
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
-    <meta itemprop="description" content="Client-side WebRTC code samples">
-    <meta itemprop="name" content="WebRTC code samples">
+    <meta itemprop="description" content="Lyra in-browser on webassembly">
+    <meta itemprop="name" content="Lyra on webassembly">
     <meta name="mobile-web-app-capable" content="yes">
     <meta id="theme-color" name="theme-color" content="#ffffff">
 
     <base target="_blank">
 
-    <title>Insertable Streams - Audio</title>
+    <title>Lyra on webassembly</title>
 
     <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="./index.css">
@@ -31,19 +32,21 @@
 <div id="container">
 
     <h1>
-        <span>Realtime audio coding with <a href="//ai.googleblog.com/2021/08/soundstream-end-to-end-neural-audio.html" title="Soundstream codec">Soundstream</a></span>
+        <span>Audio coding with <a href="https://ai.googleblog.com/2021/02/lyra-new-very-low-bitrate-codec-for.html"
+                                   title="Lyra codec">Lyra</a></span>
     </h1>
 
-    <p>This example demonstrates Google's Soundstream, a neural audio codec.
-        It encodes audio from the microphone to 3200 kpbs and decodes the encoded packets and plays it back.
-        Warning: if you're not using headphones, pressing Start will cause feedback.
+    <p>This example demonstrates Lyra, an <a href="https://github.com/google/lyra" title="Lyra github">open-source</a>
+        neural speech codec from Google, running on webassembly. Press Start and speak into the microphone. Compare the
+        audio quality with Lyra enabled and disabled. Lyra encodes your speech to <b>3 Kbps</b>, and decodes and plays
+        it back.
     </p>
     <audio id="audioOutput" controls></audio>
-
+    <br></br>
     <div>
         <button type="button" id="startButton">Start</button>
         <button type="button" id="stopButton" disabled>Stop</button>
-        <button type="button" id="enableLyraButton">Enable Soundstream</button>
+        <button type="button" id="enableLyraButton">Enable Lyra</button>
         <div>
 
             <p>Warning: if you're not using headphones, pressing Start may cause feedback.
@@ -57,8 +60,8 @@
                     href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrackProcessor#browser_compatibility"
                     title="browser compatibility">browser compatibility</a>.
             </p>
-            <a href="https://github.com/simplertc-io/soundstream"
-               title="Source for this page" id="viewSource">View Soundstream's source on GitHub.</a>
+            <a href="https://github.com/simplertc-io/lyra_demo"
+               title="Source for this page" id="viewSource">View source on GitHub.</a>
             <p>
                 Overall, the quality of speech Lyra generates here after encoding to 3 kbps is okay.
                 The sample speech clips on Google's <a
@@ -68,34 +71,31 @@
                     title="Soundstream codec">Soundstream</a>, another neural audio codec.
             </p>
 
-
         </div>
 
         <script src="https://webrtc.github.io/adapter/adapter-latest.js" crossorigin></script>
-        <script type="module" src="demo.js" async></script>
-
+        <script type="module" src="./index.js" async></script>
         <script type="module">
             // Import the functions you need from the SDKs you need
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
-            import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
-            // TODO: Add SDKs for Firebase products that you want to use
-            // https://firebase.google.com/docs/web/setup#available-libraries
-
+            import {initializeApp} from "https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js";
+            import {getAnalytics} from "https://www.gstatic.com/firebasejs/9.9.0/firebase-analytics.js";
             // Your web app's Firebase configuration
             // For Firebase JS SDK v7.20.0 and later, measurementId is optional
             const firebaseConfig = {
-                apiKey: "AIzaSyD7lERsKsqQfRI5s-6s4ssEmIOfMccxuzk",
-                authDomain: "simplertc-9a921.firebaseapp.com",
-                projectId: "simplertc-9a921",
-                storageBucket: "simplertc-9a921.appspot.com",
-                messagingSenderId: "562650277743",
-                appId: "1:562650277743:web:57be60b478a88a0b642a9a",
-                measurementId: "G-B7P1D2SPNV"
+                apiKey: "AIzaSyAocFzp-5GTs0Wq1FTnRc3a7s0mbHlP4SM",
+                authDomain: "lyra-69165.firebaseapp.com",
+                projectId: "lyra-69165",
+                storageBucket: "lyra-69165.appspot.com",
+                messagingSenderId: "832972574701",
+                appId: "1:832972574701:web:95a45730d0c5ca7b60e1e4",
+                measurementId: "G-QBHNJRYFLQ"
             };
 
             // Initialize Firebase
             const app = initializeApp(firebaseConfig);
             const analytics = getAnalytics(app);
         </script>
+
+
 </body>
 </html>
