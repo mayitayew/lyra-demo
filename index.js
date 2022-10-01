@@ -1,6 +1,6 @@
 'use strict';
 
-import Module from './webassembly_codec_wrapper.js';
+import Module from './soundstream_codec_wrapper.js';
 import {HeapAudioBuffer} from "./audio_helper.js";
 
 // Initialize the lyra codec module.
@@ -90,16 +90,10 @@ const constraints = window.constraints = {
     video: false
 };
 
-
-// Lyra encodes/decodes in frames of 40ms. Audio is being acquired in 10ms chunks. Thus we need to
-// accumulate four audio chunks to have a buffer of 40ms that can be processed by Lyra.
-const kNumRequiredFrames = 4;
-const kNumSamplesPerFrame = 480;
-const kNumRequiredSamples = kNumSamplesPerFrame * kNumRequiredFrames;
-let buffer = new Float32Array(kNumRequiredSamples);
-let buffer_index = 0;
-let num_frames_copied = 0;
-let initial_frame_start_time = 0;
+let main_buffer = new Float32Array(1920);
+let copy_index = 0;
+let num_copied = 0;
+let start_time = 0;
 
 // Returns an encodeAndDecode transform function for use with TransformStream.
 function encodeAndDecode() {
@@ -116,26 +110,32 @@ function encodeAndDecode() {
             controller.enqueue(audiodata);
         } else {
             console.log("*****Lyra codec is in use*****.");
+            console.log("Sample rate is %d.", audiodata.sampleRate);
+            console.log("Number of samples is %d.", audiodata.numberOfFrames);
+
             const format = 'f32-planar';
+            const buffer = new Float32Array(audiodata.numberOfFrames);
+            audiodata.copyTo(buffer, {planeIndex: 0, format});
 
-            const current_buffer = new Float32Array(audiodata.numberOfFrames);
-            audiodata.copyTo(current_buffer, {planeIndex: 0, format});
-
-            // Copy from current buffer to accumulator buffer.
+            // Copy from current buffer to main buffer
             for (let i = 0; i < audiodata.numberOfFrames; i++) {
-                buffer[buffer_index % kNumRequiredSamples] = current_buffer[i];
-                buffer_index++;
+                main_buffer[copy_index] = buffer[i];
+                copy_index++;
             }
-            num_frames_copied++;
-            if (num_frames_copied % kNumRequiredFrames == 0) {
-                // We have enough frames to encode and decode.
-                var heapInputBuffer = new HeapAudioBuffer(codecModule, kNumRequiredSamples, 1, 1);
-                heapInputBuffer.getChannelData(0).set(buffer);
+            num_copied++;
 
-                var heapOutputBuffer = new HeapAudioBuffer(codecModule, kNumRequiredSamples, 1, 1);
+            console.log("Input input samples: ", buffer);
+
+            console.log("The combined input samples are: ", main_buffer);
+
+            if (num_copied == 4) {
+                var heapInputBuffer = new HeapAudioBuffer(codecModule, main_buffer.length, 1, 1);
+                heapInputBuffer.getChannelData(0).set(main_buffer);
+
+                var heapOutputBuffer = new HeapAudioBuffer(codecModule, main_buffer.length, 1, 1);
 
                 const success = codecModule.encodeAndDecode(heapInputBuffer.getHeapAddress(),
-                    kNumRequiredSamples, audiodata.sampleRate,
+                    main_buffer.length, audiodata.sampleRate,
                     heapOutputBuffer.getHeapAddress());
 
                 if (!success) {
@@ -143,20 +143,26 @@ function encodeAndDecode() {
                     return;
                 }
 
-                const output_buffer = new Float32Array(kNumRequiredSamples);
+                const output_buffer = new Float32Array(main_buffer.length);
                 output_buffer.set(heapOutputBuffer.getChannelData(0));
+
+                console.log("Input buffer: ", main_buffer);
+                console.log("Output buffer: ", output_buffer);
 
                 controller.enqueue(new AudioData({
                     format: format,
                     sampleRate: audiodata.sampleRate,
-                    numberOfFrames: kNumRequiredSamples,  // Frames in the audioData object are individual samples.
+                    numberOfFrames: main_buffer.length,
                     numberOfChannels: 1,
-                    timestamp: initial_frame_start_time,
+                    timestamp: start_time,
                     // A typed array of audio data.
                     data: output_buffer,
                 }));
-            } else if (num_frames_copied % kNumRequiredFrames == 1) {
-                initial_frame_start_time = audiodata.timestamp;
+                copy_index = 0;
+                num_copied = 0;
+                main_buffer.fill(0);
+            } else if (num_copied == 1) {
+                start_time = audiodata.timestamp;
             }
         }
     };
