@@ -14,13 +14,13 @@
     <meta name="description" content="Lyra on webassembly">
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
     <meta itemprop="description" content="Lyra in-browser on webassembly">
-    <meta itemprop="name" content="Lyra on webassembly">
+    <meta itemprop="name" content="Soundstream on webassembly">
     <meta name="mobile-web-app-capable" content="yes">
     <meta id="theme-color" name="theme-color" content="#ffffff">
 
     <base target="_blank">
 
-    <title>Lyra on webassembly</title>
+    <title>Lyra V2 on webassembly</title>
 
     <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="./index.css">
@@ -32,14 +32,13 @@
 <div id="container">
 
     <h1>
-        <span>Audio coding with <a href="https://ai.googleblog.com/2021/02/lyra-new-very-low-bitrate-codec-for.html"
-                                   title="Lyra codec">Lyra</a></span>
+        <span>Realtime audio encoding and decoding with <a href="https://ai.googleblog.com/2021/08/soundstream-end-to-end-neural-audio.html"
+                                   title="Soundstream codec">Soundstream</a></span>
     </h1>
 
-    <p>This example demonstrates Lyra, an <a href="https://github.com/google/lyra" title="Lyra github">open-source</a>
-        neural speech codec from Google, running on webassembly. Press Start and speak into the microphone. Compare the
-        audio quality with Lyra enabled and disabled. Lyra encodes your speech to <b>3 Kbps</b>, and decodes and plays
-        it back.
+    <p>This example demonstrates Lyra V2 aka Soundstream, an <a href="https://github.com/google/lyra" title="Lyra github">open-source</a>
+        neural audio codec from Google, running on webassembly. Press Start and speak into the microphone.
+        Lyra encodes your speech to <b>3 Kbps</b>, and decodes and plays it back.
     </p>
     <audio id="audioOutput" controls></audio>
     <br></br>
@@ -62,15 +61,6 @@
             </p>
             <a href="https://github.com/simplertc-io/lyra_demo"
                title="Source for this page" id="viewSource">View source on GitHub.</a>
-            <p>
-                Overall, the quality of speech Lyra generates here after encoding to 3 kbps is okay.
-                The sample speech clips on Google's <a
-                    href="https://ai.googleblog.com/2021/02/lyra-new-very-low-bitrate-codec-for.html"
-                    title="Lyra codec">blogpost</a> are definitely better. Even better quality audio is produced by <a
-                    href="https://ai.googleblog.com/2021/08/soundstream-end-to-end-neural-audio.html"
-                    title="Soundstream codec">Soundstream</a>, another neural audio codec.
-            </p>
-
         </div>
 
         <script src="https://webrtc.github.io/adapter/adapter-latest.js" crossorigin></script>
