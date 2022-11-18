@@ -1,16 +1,6 @@
 'use strict';
 
-import Module from './webassembly_codec_wrapper.js';
-import {HeapAudioBuffer} from "./audio_helper.js";
-
-// Initialize the lyra codec module.
-let codecModule;
-Module().then((module) => {
-    console.log("Initialized codec's wasmModule.");
-    codecModule = module;
-}).catch(e => {
-    console.log(`Module() error: ${e.name} message: ${e.message}`);
-});
+import {isLyraReady, encodeWithLyra, decodeWithLyra} from "https://unpkg.com/lyra-codec/dist/lyra_bundle.js";
 
 /* global MediaStreamTrackProcessor, MediaStreamTrackGenerator, AudioData */
 if (typeof MediaStreamTrackProcessor === 'undefined' ||
@@ -78,23 +68,22 @@ async function init() {
     enableLyraButton.disabled = true;
 }
 
+const kSampleRate = 48000;
+
 const constraints = window.constraints = {
     audio: {
         latency: 0.01,
         channelCount: 1,
-        sampleRate: 48000,
-        autoGainControl: true,
-        echoCancellation: true,
-        noiseSuppression: true,
+        sampleRate: kSampleRate,
     },
     video: false
 };
 
 
-// Lyra encodes/decodes in frames of 40ms. Audio is being acquired in 10ms chunks. Thus we need to
-// accumulate four audio chunks to have a buffer of 40ms that can be processed by Lyra.
-const kNumRequiredFrames = 4;
-const kNumSamplesPerFrame = 480;
+// Lyra (v1.3) encodes/decodes in frames of 20ms. Audio is being acquired in 10ms chunks. Thus we need
+// two audio chunks to have a buffer of 20ms that can be processed by Lyra.
+const kNumRequiredFrames = 2;
+const kNumSamplesPerFrame = 0.01 * kSampleRate;
 const kNumRequiredSamples = kNumSamplesPerFrame * kNumRequiredFrames;
 let buffer = new Float32Array(kNumRequiredSamples);
 let buffer_index = 0;
@@ -105,7 +94,7 @@ let initial_frame_start_time = 0;
 function encodeAndDecode() {
     return (audiodata, controller) => {
 
-        if (!isLyraCodecReady && codecModule.isCodecReady()) {
+        if (!isLyraCodecReady && isLyraReady()) {
             isLyraCodecReady = true;
             enableLyraButton.disabled = false;
             console.log("Lyra codec is ready.");
@@ -129,31 +118,17 @@ function encodeAndDecode() {
             num_frames_copied++;
             if (num_frames_copied % kNumRequiredFrames == 0) {
                 // We have enough frames to encode and decode.
-                var heapInputBuffer = new HeapAudioBuffer(codecModule, kNumRequiredSamples, 1, 1);
-                heapInputBuffer.getChannelData(0).set(buffer);
-
-                var heapOutputBuffer = new HeapAudioBuffer(codecModule, kNumRequiredSamples, 1, 1);
-
-                const success = codecModule.encodeAndDecode(heapInputBuffer.getHeapAddress(),
-                    kNumRequiredSamples, audiodata.sampleRate,
-                    heapOutputBuffer.getHeapAddress());
-
-                if (!success) {
-                    console.log("EncodeAndDecode was not successful.");
-                    return;
-                }
-
-                const output_buffer = new Float32Array(kNumRequiredSamples);
-                output_buffer.set(heapOutputBuffer.getChannelData(0));
+                const encoded = encodeWithLyra(buffer, kSampleRate);
+                const decoded = decodeWithLyra(encoded, kSampleRate, kNumRequiredSamples);
 
                 controller.enqueue(new AudioData({
                     format: format,
                     sampleRate: audiodata.sampleRate,
-                    numberOfFrames: kNumRequiredSamples,  // Frames in the audioData object are individual samples.
+                    numberOfFrames: decoded.length,  // this is the number of samples.
                     numberOfChannels: 1,
                     timestamp: initial_frame_start_time,
                     // A typed array of audio data.
-                    data: output_buffer,
+                    data: decoded,
                 }));
             } else if (num_frames_copied % kNumRequiredFrames == 1) {
                 initial_frame_start_time = audiodata.timestamp;
